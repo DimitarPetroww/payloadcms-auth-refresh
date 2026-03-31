@@ -27,6 +27,7 @@ export const refreshEndpoint = (options: RefreshEndpointOptions): Endpoint => ({
 
     const result = await req.payload.find({
       collection: 'refresh-tokens',
+      depth: 2,
       where: {
         tokenHash: {
           equals: hashToken(refresh_token, options.pepper),
