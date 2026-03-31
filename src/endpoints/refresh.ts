@@ -119,6 +119,9 @@ export const refreshEndpoint = (options: RefreshEndpointOptions): Endpoint => ({
       tokenExpiration: collectionConfig.auth?.tokenExpiration,
     })
 
+    console.log(user)
+    console.log(session.entity)
+
     return Response.json({
       access_token: accessJWT,
       refresh_token: token,
