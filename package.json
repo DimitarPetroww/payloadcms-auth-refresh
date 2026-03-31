@@ -1,6 +1,6 @@
 {
   "name": "@bivola/refresh-auth",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "description": "A blank template to get started with Payload 3.0",
   "license": "MIT",
   "type": "module",
