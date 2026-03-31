@@ -121,7 +121,7 @@ export const refreshEndpoint = (options: RefreshEndpointOptions): Endpoint => ({
     return Response.json({
       access_token: accessJWT,
       refresh_token: token,
-      user: session.user,
+      user,
     })
   },
   method: 'post',
