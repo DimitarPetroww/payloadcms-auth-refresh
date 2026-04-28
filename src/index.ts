@@ -4,6 +4,7 @@ import { RefreshTokens } from './collections/refreshTokens'
 import { loginEndpoint } from './endpoints/login'
 import { logoutEndpoint } from './endpoints/logout'
 import { refreshEndpoint } from './endpoints/refresh'
+import { registerEndpoint } from './endpoints/register'
 
 export type AuthRefreshPluginOptions = {
   entity_slug: string
@@ -26,6 +27,7 @@ export const authRefreshPlugin =
       endpoints: [
         ...(config.endpoints || []),
         loginEndpoint({ entity_slug, identifier_field, pepper, refreshTokenTTL }),
+        registerEndpoint({ entity_slug, identifier_field, pepper, refreshTokenTTL }),
         refreshEndpoint({ entity_slug, identifier_field, pepper, refreshTokenTTL }),
         logoutEndpoint({ entity_slug, pepper }),
       ],

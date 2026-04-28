@@ -4,18 +4,27 @@ import type { AuthRefreshPluginOptions } from '../index'
 
 import { authenticate } from '../utils/authenticate'
 
-type LoginEndpointOptions = Pick<
+type RegisterEndpointOptions = Pick<
   AuthRefreshPluginOptions,
   'entity_slug' | 'identifier_field' | 'pepper' | 'refreshTokenTTL'
 >
 
-export const loginEndpoint = (options: LoginEndpointOptions): Endpoint => ({
+export const registerEndpoint = (options: RegisterEndpointOptions): Endpoint => ({
   handler: async (req) => {
-    const { deviceId, identifier, password } = (await req.json?.()) || {}
+    const { deviceId, identifier, password, ...otherFields } = (await req.json?.()) || {}
 
     if (!identifier || !password) {
       return Response.json({ message: 'Identifier and password are required.' }, { status: 400 })
     }
+
+    await req.payload.create({
+      collection: options.entity_slug,
+      data: {
+        [options.identifier_field]: identifier,
+        password,
+        ...otherFields,
+      },
+    })
 
     const result = await authenticate(req, {
       deviceId,
@@ -30,5 +39,5 @@ export const loginEndpoint = (options: LoginEndpointOptions): Endpoint => ({
     return Response.json(result)
   },
   method: 'post',
-  path: `/auth/login`,
+  path: `/auth/register`,
 })
