@@ -40,7 +40,13 @@ export const authenticate = async (req: PayloadRequest, options: AuthenticateOpt
   })
 
   return {
-    access_token: login.token,
+    // Shape must match the refresh endpoint, which returns jwtSign's
+    // { exp, token }. Returning a bare string here left clients reading
+    // `access_token.token` with undefined after every login.
+    access_token: {
+      exp: login.exp,
+      token: login.token,
+    },
     refresh_token: token,
     user: login.user,
   }

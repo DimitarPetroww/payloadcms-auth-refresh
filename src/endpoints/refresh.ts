@@ -7,6 +7,7 @@ import type { AuthRefreshPluginOptions } from '../index'
 
 import { RevocationReason } from '../collections/refreshTokens'
 import { createRefreshToken, hashToken } from '../utils/crypto'
+import { garbageCollect } from '../utils/garbageCollect'
 import { getRequestMeta } from '../utils/getRequestMeta'
 
 type RefreshEndpointOptions = Pick<
@@ -78,6 +79,16 @@ export const refreshEndpoint = (options: RefreshEndpointOptions): Endpoint => ({
         revocationReason: RevocationReason.TokenRotation,
         rotatedAt: now,
       },
+    })
+
+    // Rotation is what creates the garbage, so sweep from here. Fire and
+    // forget: garbageCollect never rejects, and the refresh must not wait on
+    // housekeeping.
+    void garbageCollect(req, 'refresh-tokens', {
+      or: [
+        { revokedAt: { exists: true } },
+        { expiresAt: { less_than: new Date().toISOString() } },
+      ],
     })
 
     const collectionConfig = req.payload.collections[options.entity_slug].config

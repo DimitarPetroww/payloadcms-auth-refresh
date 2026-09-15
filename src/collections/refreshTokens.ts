@@ -44,6 +44,13 @@ export const RefreshTokens = (options: RefreshTokensOptions): CollectionConfig =
       type: 'date',
     },
     {
+      // Written by the refresh endpoint on rotation. Undeclared fields are
+      // silently dropped by Payload, which was losing the rotation chain.
+      name: 'replacedBy',
+      type: 'relationship',
+      relationTo: 'refresh-tokens',
+    },
+    {
       name: 'deviceId',
       type: 'text',
       required: true,
